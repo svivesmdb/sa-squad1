@@ -26,8 +26,16 @@ class LoginForm(Form):
     name = TextField('Username', [DataRequired()])
     password = PasswordField('Password', [DataRequired()])
 
+class SearchForm(Form):
+    search = TextField('Search', [DataRequired()])
 
 class ForgotForm(Form):
     email = TextField(
         'Email', validators=[DataRequired(), Length(min=6, max=40)]
     )
+
+class ProofPointForm(Form):
+    customerCompany = TextField('customerCompany', [DataRequired()])
+    customerIndustry = TextField('customerIndustry', [DataRequired()])
+    # @Alessandro: Add here the other fields to support the operation
+

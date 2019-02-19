@@ -45,13 +45,34 @@ def login_required(test):
 
 @app.route('/')
 def home():
-    appDao.getProofPoints()
-    return render_template('pages/placeholder.home.html')
+    print(appDao.getProofPoints())
+    
+    form = SearchForm(request.form)
+    return render_template('pages/placeholder.home.html', form=form)
 
 
 @app.route('/about')
 def about():
     return render_template('pages/placeholder.about.html')
+
+@app.route('/proofpoint', methods=['GET', 'POST'])
+def proofpoint():
+    if request.method == 'POST':
+        customerCompany = request.form['customerCompany']
+        customerIndustry = request.form['customerIndustry']
+        customerProject = request.form['customerProject']
+        customerProjectDescription = request.form['customerProjectDescription']
+        useCase = request.form['useCase']
+        creationDate = request.form['creationDate']
+        owner_id = request.form['owner_id']
+
+        appDao.addProofPoint(customerCompany, customerIndustry, customerProject, customerProjectDescription, useCase, creationDate, owner_id)
+        pass
+    elif request.method == 'GET':
+        form = ProofPointForm(request.form)
+        # @Alessandro: Create a form like 'proofpoint.html' to show the form to insert a new proofpoint.
+        #   also remember that it should have a field for uploading ppt files.
+        return render_template('forms/login.html', form=form)
 
 
 @app.route('/login')
