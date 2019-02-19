@@ -8,21 +8,23 @@ import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
+from dao import *
+
+
 
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
 
+ATLAS_URL = "mongodb+srv://squad1:squad1@myatlascluster-izhs1.gcp.mongodb.net/test?retryWrites=true"
+
+
 app = Flask(__name__)
 app.config.from_object('config')
-#db = SQLAlchemy(app)
 
-# Automatically tear down SQLAlchemy.
-'''
-@app.teardown_request
-def shutdown_session(exception=None):
-    db_session.remove()
-'''
+
+appDao = DAO(ATLAS_URL)
+
 
 # Login required decorator.
 '''
@@ -43,6 +45,7 @@ def login_required(test):
 
 @app.route('/')
 def home():
+    appDao.getProofPoints()
     return render_template('pages/placeholder.home.html')
 
 
