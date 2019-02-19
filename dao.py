@@ -33,6 +33,9 @@ class DAO():
     def getProofPoints(self):
         return self.cursorToArray(self.db.proofPoints.find({}))
 
+    def getUseCases(self):
+        return self.cursorToArray(self.db.useCases.find({},{"_id:0","name":1}))
+
     def getProofPoint(self, id):
         return self.db.proofPoints.findOne({"_id" : id})
     
