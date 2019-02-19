@@ -2,13 +2,14 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, flash, request
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
 from dao import *
+from werkzeug.utils import secure_filename
 
 
 
@@ -22,6 +23,7 @@ ATLAS_URL = "mongodb+srv://squad1:squad1@myatlascluster-izhs1.gcp.mongodb.net/te
 app = Flask(__name__)
 app.config.from_object('config')
 
+app.config['UPLOAD_FOLDER'] = './'
 
 appDao = DAO(ATLAS_URL)
 
@@ -35,6 +37,7 @@ def login_required(test):
             return test(*args, **kwargs)
         else:
             flash('You need to login first.')
+            return render_template('pages/placeholder.home.html', form=form)
             return redirect(url_for('login'))
     return wrap
 '''
@@ -51,29 +54,61 @@ def home():
     return render_template('pages/placeholder.home.html', form=form)
 
 
+@app.route('/search')
+def search():
+    print(appDao.getProofPoints())
+    
+    form = SearchForm(request.form)
+    return render_template('pages/placeholder.home.html', form=form)
+
+
 @app.route('/about')
 def about():
     return render_template('pages/placeholder.about.html')
 
-@app.route('/proofpoint', methods=['GET', 'POST'])
-def proofpoint():
+@app.route('/proofpoint/update', methods=['GET', 'POST'])
+def proofpointupdate():
     if request.method == 'POST':
         customerCompany = request.form['customerCompany']
         customerIndustry = request.form['customerIndustry']
         customerProject = request.form['customerProject']
         customerProjectDescription = request.form['customerProjectDescription']
         useCase = request.form['useCase']
-        creationDate = request.form['creationDate']
-        owner_id = request.form['owner_id']
+        import datetime
+        creationDate = datetime.date.today().strftime("%B %d, %Y")
+        owner_id = 'john.doe@mongodb.com' #request.form['owner_id']
+        mfile = request.files['file']
+        filename = secure_filename(mfile.filename)
+        mfile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        appDao.addProofPoint(customerCompany, customerIndustry, customerProject, customerProjectDescription, useCase, creationDate, owner_id)
-        pass
+        ppid = appDao.addProofPoint(os.path.join(app.config['UPLOAD_FOLDER'], filename), filename)
+
+        pp = {
+            "customerCompany": customerCompany,
+            "customerIndustry": customerIndustry,
+            "customerProject": customerProject,
+            "customerProjectDescription": customerProjectDescription,
+            "useCase": useCase,
+            "creationDate": creationDate,
+            "owner_id": owner_id,
+            "proofpointKey" : "AEF0897734"
+        }
+
+        appDao.updateProofPoint(ppid, pp)
+
+        flash('Proofpoint added! Thank you')
+        form = SearchForm(request.form)
+        return render_template('pages/placeholder.home.html', form=form)
+
     elif request.method == 'GET':
         form = ProofPointForm(request.form)
         # @Alessandro: Create a form like 'proofpoint.html' to show the form to insert a new proofpoint.
         #   also remember that it should have a field for uploading ppt files.
-        return render_template('forms/login.html', form=form)
+        return render_template('forms/addpp.html', form=form)
 
+@app.route('/proofpoint/', methods=['GET', 'POST'])
+def proofpoint():
+    return render_template('forms/addpp.html', form=form)
 
 @app.route('/login')
 def login():
