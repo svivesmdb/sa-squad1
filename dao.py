@@ -13,6 +13,7 @@ class DAO():
         self.db = self.client.proofPointsManager
     
     def addProofPoint(self, company, industry, project, project_desc, use_case, creation_date, owner_id):
+        
         pp = {
             "customerCompany":company,
             "customerIndustry":industry,
@@ -32,8 +33,11 @@ class DAO():
             docs.append(doc)
         return docs
 
-    def downloadProofPoint(self):
-        return self.db.proofPoints.find({})
+    def getProofPoint(self, id):
+        return self.db.proofPoints.find({"_id" : id})
+    
+    def downloadProofPoint(self, id):
+        return self.db.proofPoints.find({"_id" : id})
     
     def searchProofPoints(self):
         return self.db.proofPoints.find({})
