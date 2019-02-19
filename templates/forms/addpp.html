@@ -1,0 +1,19 @@
+{% extends 'layouts/form.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<form method="post" class="form" enctype="multipart/form-data">
+    <h3 class="form-heading">Add proof point <a href="{{ url_for('home') }}" title="Back to homepage"><i
+                class="fa fa-home pull-right"></i></a></h3>
+    {{ form.customerCompany(class_ = 'form-control', placeholder="Company name",required = true, autofocus = true) }}
+    {{ form.customerIndustry(class_ = 'form-control ', placeholder="Industry", required = true, autofocus = true) }}
+    {{ form.customerProject(class_ = 'form-control ', placeholder="Project", required = true, autofocus = true) }}
+    {{ form.customerProjectDescription(class_ = 'form-control',  placeholder="Project description", required = true, autofocus = true) }}
+    {{ form.useCase(class_ = 'form-control', required = true, placeholder="Type the kind of use case: 360 view, ", autofocus = true) }}
+
+    <input type=file name=file>
+
+    <p class="pull-right"><a href="{{ url_for('home') }}">back home</a></p>
+
+    <input type="submit" value="Submit" class="btn btn-primary btn-lg btn-block">
+</form>
+{% endblock %}

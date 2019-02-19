@@ -37,5 +37,6 @@ class ForgotForm(Form):
 class ProofPointForm(Form):
     customerCompany = TextField('customerCompany', [DataRequired()])
     customerIndustry = TextField('customerIndustry', [DataRequired()])
-    # @Alessandro: Add here the other fields to support the operation
-
+    customerProject = TextField('customerProject', [DataRequired()])
+    customerProjectDescription = TextField('customerProjectDescription', [DataRequired()])
+    useCase = TextField('useCase', [DataRequired()])
