@@ -1,0 +1,4 @@
+*.pyc
+*.log
+Procfile.*
+__pycache__
