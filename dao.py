@@ -28,11 +28,11 @@ class DAO():
             "customerProjectDescription": project_desc,
             "useCase": use_case,
             "creationDate": creation_date,
-            "owner_id": owner_id
+            "owner_id": owner_id,
+            "proofpointKey" : "AEF0897734"
         }
         '''
         self.db.fs.files.update_one({"_id":id},{"$set":{"metadata":pp}})
-
 
     def cursorToArray(self,cursor):
         docs = []
@@ -54,14 +54,14 @@ class DAO():
         return self.fs.get({"_id" : id}).read()
     
     def searchProofPoints(self, keywords):
+    # keywords is a space separated string with all keywords
         res = self.db.fs.files.find({
             '$text':{
                 '$search': "\"" + keywords+  "\"" 
             }
         })
-
         return self.cursorToArray(res)
     
-    def getProofPointUrl(self):
-
+    def getProofPointUrl(self, pp):
+        return self.baseURL + "/proofpoint/" + pp["proofPointKey"]
         pass
