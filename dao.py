@@ -24,7 +24,7 @@ class DAO():
         contentType = "text/plain"
         with self.fs.new_file(filename=fileName, content_type=contentType) as fp:
             fp.write(fileName)
-        id = fp["_id"]
+        id = fp._id
         return id
 
     def updateProofPoint(self, id, pp):
