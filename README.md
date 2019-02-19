@@ -3,6 +3,22 @@
 
 **What is Flask?** Flask is a microframework for Python based on Werkzeug and Jinja2.
 
+
+**How to setup?**
+(1) Install dependencies 
+pip install -r requirements.txt
+
+(2) Run the app, 
+python app.py
+
+
+
+
+
+
+
+
+
 Project Structure
 --------
 
