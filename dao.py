@@ -1,6 +1,8 @@
 
 from pymongo import MongoClient
 import gridfs
+import hashlib
+import magic
 
 # Set your classes here.
 # fs.files must be full text indexed using :
@@ -14,10 +16,16 @@ class DAO():
         self.db = self.client.proofPointsManager
         self.fs = gridfs.GridFS(self.db)
     
-    def addProofPoint(self, file):
+    def addProofPoint(self, filePath, fileName):
     #add should just create the document in fs.files by uploading the file
-    #a call must then be made to updateProofPoints to set the metadata    
-        id = self.fs.put(file)
+    #a call must then be made to updateProofPoints to set the metadata  
+        mime = magic.Magic(mime=True)
+        contentType = mime.from_file("filePath")
+        with self.fs.new_file(
+            filename=fileName, 
+            content_type=contentType) as fp:
+            fp.write(fileName)
+        id = fp["_id"]
         return id
 
     def updateProofPoint(self, id, pp):
@@ -33,6 +41,7 @@ class DAO():
             "proofpointKey" : "AEF0897734"
         }
         '''
+        pp["proofPointKey"]=hashlib.sha224(str(id)).hexdigest()
         self.db.fs.files.update_one({"_id":id},{"$set":{"metadata":pp}})
 
     def cursorToArray(self,cursor):
@@ -42,7 +51,7 @@ class DAO():
         return docs
 
     def getProofPoints(self):
-        return self.cursorToArray(self.db.proof.fs.files.find({}))
+        return self.cursorToArray(self.db.fs.files.find({}))
 
     def getUseCases(self):
         projection = {"_id":0,"name":1}
