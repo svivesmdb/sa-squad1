@@ -2,7 +2,7 @@
 from pymongo import MongoClient
 import gridfs
 import hashlib
-import magic
+#import magic
 
 # Set your classes here.
 # fs.files must be full text indexed using :
@@ -19,11 +19,10 @@ class DAO():
     def addProofPoint(self, filePath, fileName):
     #add should just create the document in fs.files by uploading the file
     #a call must then be made to updateProofPoints to set the metadata  
-        mime = magic.Magic(mime=True)
-        contentType = mime.from_file("filePath")
-        with self.fs.new_file(
-            filename=fileName, 
-            content_type=contentType) as fp:
+        #mime = magic.Magic(mime=True)
+        #contentType = mime.from_file("filePath")
+        contentType = "text/plain"
+        with self.fs.new_file(filename=fileName, content_type=contentType) as fp:
             fp.write(fileName)
         id = fp["_id"]
         return id
