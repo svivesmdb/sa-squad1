@@ -17,7 +17,8 @@ class DAO():
     def addProofPoint(self, file):
     #add should just create the document in fs.files by uploading the file
     #a call must then be made to updateProofPoints to set the metadata    
-        self.fs.put(file)
+        id = self.fs.put(file)
+        return id
 
     def updateProofPoint(self, id, pp):
         '''
@@ -41,7 +42,7 @@ class DAO():
         return docs
 
     def getProofPoints(self):
-        return self.cursorToArray(self.db.proofPoints.find({}))
+        return self.cursorToArray(self.db.proof.fs.files.find({}))
 
     def getUseCases(self):
         projection = {"_id":0,"name":1}
@@ -49,6 +50,9 @@ class DAO():
 
     def getProofPoint(self, id):
         return self.db.fs.files.findOne({"_id" : id})
+
+    def getProofPointByKey(self, key):
+        return self.db.fs.files.findOne({"metadata.proofPointKey" : key})
     
     def downloadProofPoint(self, id):
         return self.fs.get({"_id" : id}).read()
