@@ -90,8 +90,7 @@ def proofpointupdate():
             "customerProjectDescription": customerProjectDescription,
             "useCase": useCase,
             "creationDate": creationDate,
-            "owner_id": owner_id,
-            "proofpointKey" : "AEF0897734"
+            "owner_id": owner_id
         }
 
         appDao.updateProofPoint(ppid, pp)
